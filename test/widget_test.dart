@@ -1,10 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
-import 'package:scheduler/main.dart';
-import 'package:scheduler/providers/timer_provider.dart';
 import 'package:scheduler/models/work_session.dart';
 import 'package:scheduler/models/break_entry.dart';
 

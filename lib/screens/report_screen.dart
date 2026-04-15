@@ -29,24 +29,6 @@ class _ReportScreenState extends State<ReportScreen> {
     _selectedMonth = now.month;
   }
 
-  List<int> get _availableMonths {
-    final sessions = HiveService.getAllSessions();
-    final Set<String> months = {};
-    for (final s in sessions) {
-      months.add('${s.startTime.year}-${s.startTime.month}');
-    }
-    // Always include current month
-    final now = DateTime.now();
-    months.add('${now.year}-${now.month}');
-    return months
-        .map((m) {
-          final parts = m.split('-');
-          return int.parse(parts[0]) * 100 + int.parse(parts[1]);
-        })
-        .toList()
-      ..sort((a, b) => b.compareTo(a));
-  }
-
   @override
   Widget build(BuildContext context) {
     final sessions = HiveService.getAllSessions();
@@ -321,7 +303,7 @@ class _MonthPicker extends StatelessWidget {
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         IconButton(
-          onPressed: year > now.year || (year == now.year && month < now.month)
+          onPressed: year < now.year || (year == now.year && month < now.month)
               ? () {
                   var m = month + 1;
                   var y = year;
