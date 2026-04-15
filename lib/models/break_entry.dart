@@ -48,6 +48,6 @@ class BreakEntryAdapter extends TypeAdapter<BreakEntry> {
     writer.writeByte(1);
     // Use write(null) for nullable fields – Hive encodes null as a typed null value
     writer.write(
-        obj.endTime != null ? obj.endTime!.millisecondsSinceEpoch : null);
+        obj.endTime?.millisecondsSinceEpoch);
   }
 }

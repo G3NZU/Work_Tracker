@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 import '../models/break_entry.dart';
 import '../models/work_session.dart';
 
@@ -19,7 +21,17 @@ class HiveService {
       Hive.registerAdapter(BreakEntryAdapter());
     }
 
-    await Hive.openBox<WorkSession>(_sessionsBoxName);
+    try {
+      await Hive.openBox<WorkSession>(_sessionsBoxName);
+    } catch (_) {
+      // Box is corrupted — manually delete the files and reopen fresh.
+      final dir = await getApplicationDocumentsDirectory();
+      for (final ext in ['.hive', '.lock']) {
+        final file = File('${dir.path}/$_sessionsBoxName$ext');
+        if (await file.exists()) await file.delete();
+      }
+      await Hive.openBox<WorkSession>(_sessionsBoxName);
+    }
   }
 
   /// Returns the sessions box. Must be opened first via [init].
