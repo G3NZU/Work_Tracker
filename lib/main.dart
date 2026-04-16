@@ -18,8 +18,38 @@ void main() async {
   );
 }
 
-class SchedulerApp extends StatelessWidget {
+class SchedulerApp extends StatefulWidget {
   const SchedulerApp({super.key});
+
+  @override
+  State<SchedulerApp> createState() => _SchedulerAppState();
+}
+
+class _SchedulerAppState extends State<SchedulerApp>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// Flush Hive to disk whenever the app leaves the foreground so that
+  /// no pending writes are lost if the OS kills the process.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      HiveService.flushAll().catchError(
+        (Object e) => debugPrint('Hive flush failed: $e'),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

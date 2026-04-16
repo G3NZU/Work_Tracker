@@ -55,6 +55,14 @@ class HiveService {
     return sessions;
   }
 
+  /// Flush all open boxes to disk. Call this when the app is about to be
+  /// backgrounded or closed to ensure no pending writes are lost.
+  static Future<void> flushAll() async {
+    if (Hive.isBoxOpen(_sessionsBoxName)) {
+      await sessionsBox.flush();
+    }
+  }
+
   /// Get the active session (if any). At most one session should be active.
   static WorkSession? getActiveSession() {
     try {
